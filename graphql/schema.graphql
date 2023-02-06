@@ -25,7 +25,7 @@ type Query {
 }
 
 type Mutation {
-    login(email: String!, password: String!): User!
+    login(email: String! password: String!): User!
     logout: User @guard
     addProductToCart: Order! @guard
     removeProductFromCart(product: Int!): [Product!] @guard

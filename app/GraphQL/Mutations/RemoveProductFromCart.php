@@ -2,7 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
-final class RemoveProductToCart
+final class RemoveProductFromCart
 {
     /**
      * @param  null  $_
