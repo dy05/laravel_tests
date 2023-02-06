@@ -46,15 +46,16 @@ type Product {
     id: ID!
     name: String!
     description: String!
-    price: Int!
-    quantity: Int!
+    price: Float!
+    quantity: Float!
+    cart_quantity: Float
     created_at: DateTime!
     updated_at: DateTime!
 }
 
 type Order {
     id: ID!
-    total: Int!
+    total: Float!
     created_at: DateTime!
     updated_at: DateTime!
     user: User! @belongsTo

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -67,11 +68,18 @@ class User extends Authenticatable
      */
     public function getCartAttribute(): array|Collection
     {
+        return $this->cart_products()->get();
+    }
+
+    /**
+     * @return Builder
+     */
+    public function cart_products(): Builder
+    {
         return Cart::query()
             ->join('products', 'products.id', '=', 'carts.product_id')
             ->where('user_id', $this->id)
-            ->select(['products.*', DB::raw('count(carts.product_id) as quantity')])
-            ->groupBy(['carts.product_id'])
-            ->get();
+            ->select(['products.*', DB::raw('count(carts.product_id) as cart_quantity')])
+            ->groupBy(['carts.product_id']);
     }
 }

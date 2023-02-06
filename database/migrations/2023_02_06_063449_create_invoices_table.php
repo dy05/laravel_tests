@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('total');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('order_id');
+            $table->unsignedBigInteger('customer_id')->nullable();
             $table->timestamps();
         });
     }

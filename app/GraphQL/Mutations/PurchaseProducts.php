@@ -2,8 +2,8 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\User;
 use Error;
 use Illuminate\Support\Facades\Auth;
@@ -20,23 +20,29 @@ final class PurchaseProducts
         /** @var User $user */
         $user = Auth::user();
 
-        // We make a select distinct for test
-        $cart = Cart::query()
-            ->where(['user_id' => $user->id]);
-        $products = $cart
-            ->distinct()
-            ->pluck('product_id')
-            ->toArray();
+        $cart = $user->cart_products();
 
-        if (($products_count = count($products)) < 1) {
+        /** @var Product[] $products */
+        $products = $cart->get();
+
+        if (count($products) < 1) {
             throw new Error('Empty cart');
         }
 
         /** @var Order $order */
-        $order = Order::create(['user_id' => $user->id, 'total' =>$products_count]);
-        foreach ($products as $item) {
-            $order->products()->attach($item);
+        $order = Order::create(['user_id' => $user->id, 'total' => $total = 0]);
+        foreach ($products as $product) {
+            $attributes = [
+                'quantity' => $product->cart_quantity,
+                'unit_price' => $product->price,
+                'total_price' => (double) $product->cart_quantity * (double) $product->price,
+                'details' => ''
+            ];
+            $order->products()->attach($product->id, $attributes);
+            $total += $attributes['total_price'];
         }
+
+        $order->total = $total;
         $order->save();
         $order->fresh()->load(['user', 'products']);
         $cart->delete();
