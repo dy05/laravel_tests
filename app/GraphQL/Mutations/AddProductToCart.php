@@ -22,11 +22,7 @@ final class AddProductToCart
         $user = Auth::user();
         $user->carts()->create(['product_id' => $args['product']]);
         $user->save();
-        return Cart::query()
-            ->join('products', 'products.id', '=', 'carts.product_id')
-            ->where('user_id', $user->id)
-            ->select(['products.*', DB::raw('count(carts.product_id) as quantity')])
-            ->groupBy(['carts.product_id'])
-            ->get();
+        $user->fresh();
+        return $user->cart;
     }
 }
