@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\GraphQL\Exceptions\NoCartProductException;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -14,6 +15,7 @@ final class PurchaseProducts
      * @param null $_
      * @param array{} $args
      * @return Order
+     * @throws NoCartProductException
      */
     public function __invoke($_, array $args): Order
     {
@@ -26,7 +28,7 @@ final class PurchaseProducts
         $products = $cart->get();
 
         if (count($products) < 1) {
-            throw new Error('Empty cart');
+            throw new NoCartProductException();
         }
 
         /** @var Order $order */
