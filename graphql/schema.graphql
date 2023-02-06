@@ -27,7 +27,8 @@ type Query {
 type Mutation {
     login(email: String! password: String!): User!
     logout: User @guard
-    addProductToCart: Order! @guard
+    addProductToCart(product: Int!): [Product!] @guard
+    purchaseProducts: Order! @guard
     removeProductFromCart(product: Int!): [Product!] @guard
 }
 
@@ -46,6 +47,7 @@ type Product {
     name: String!
     description: String!
     price: Int!
+    quantity: Int!
     created_at: DateTime!
     updated_at: DateTime!
 }
